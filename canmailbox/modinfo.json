@@ -1,0 +1,15 @@
+{
+    "type": "code",
+    "modid": "canmailbox",
+    "name": "canmailbox",
+    "authors": [
+      "KenigVovan",
+      "Morgen",
+      "Ragolution"
+    ],
+    "description": "Mailbox.",
+    "version": "1.0.5",
+    "dependencies": {
+        "game": ""
+    }
+}

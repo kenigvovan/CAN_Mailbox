@@ -1,0 +1,70 @@
+[
+  {
+    "ingredientPattern": "_GS,GNG,GGG",
+    "ingredients": {
+      "G": {
+        "type": "item",
+        "code": "game:plank-*",
+        "name": "wood",
+        "quantity": 1
+      },
+      "S": {
+        "type": "item",
+        "code": "game:stick",
+        "quantity": 1
+      },
+      "N": {
+        "type": "item",
+        "code": "game:metalnailsandstrips-*",
+        "allowedVariants": [ "copper", "cupronickel", "blackbronze", "tinbronze", "bismuthbronze", "iron", "meteoriciron", "gold", "silver", "steel" ],
+        "name": "material",
+        "quantity": 1
+      }
+    },
+    "name": "canmailbox-box",
+    "width": 3,
+    "height": 3,
+    "output": {
+      "type": "block",
+      "code": "canmailbox:canmailbox-east",
+      "quantity": 1,
+      "attributes": {
+        "type": "owl"
+      }
+    }
+  },
+  {
+    "ingredientPattern": "_N_,GCG,GGG",
+    "ingredients": {
+      "G": {
+        "type": "item",
+        "code": "game:plank-*",
+        "name": "wood",
+        "quantity": 2
+      },
+      "C": {
+        "type": "block",
+        "code": "game:chest-east",
+        "quantity": 1
+      },
+      "N": {
+        "type": "item",
+        "code": "game:metalnailsandstrips-*",
+        "allowedVariants": [ "copper", "cupronickel", "blackbronze", "tinbronze", "bismuthbronze", "iron", "meteoriciron", "gold", "silver", "steel" ],
+        "name": "material",
+        "quantity": 1
+      }
+    },
+    "name": "canmailbox-box-wallmounted",
+    "width": 3,
+    "height": 3,
+    "output": {
+      "type": "block",
+      "code": "canmailbox:canmailbox-east",
+      "quantity": 1,
+      "attributes": {
+        "type": "wallmounted"
+      }
+    }
+  }
+]
