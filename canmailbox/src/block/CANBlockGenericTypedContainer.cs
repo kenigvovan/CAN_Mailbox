@@ -26,8 +26,6 @@ namespace canmailbox.src.block
             shape.SubclassForStepParenting(texturePrefixCode, 0f);
             return shape;
         }
-
-        // Token: 0x06000FD3 RID: 4051 RVA: 0x00099B14 File Offset: 0x00097D14
         public int GetProvideSlots(ItemStack stack)
         {
             string type = stack.Attributes.GetString("type", null);
@@ -57,22 +55,16 @@ namespace canmailbox.src.block
             }
             return 0;
         }
-
-        // Token: 0x06000FD4 RID: 4052 RVA: 0x00099B90 File Offset: 0x00097D90
         public string GetCategoryCode(ItemStack stack)
         {
             ITreeAttribute attributes = stack.Attributes;
             string type = attributes != null ? attributes.GetString("type", null) : null;
             return Attributes["attachableCategoryCode"][type].AsString("chest");
         }
-
-        // Token: 0x06000FD5 RID: 4053 RVA: 0x00099BD6 File Offset: 0x00097DD6
         public CompositeShape GetAttachedShape(ItemStack stack, string slotCode)
         {
             return null;
         }
-
-        // Token: 0x06000FD6 RID: 4054 RVA: 0x00099BDC File Offset: 0x00097DDC
         public void CollectTextures(ItemStack stack, Shape shape, string texturePrefixCode, Dictionary<string, CompositeTexture> intoDict)
         {
             string type = stack.Attributes.GetString("type", null);
@@ -81,20 +73,14 @@ namespace canmailbox.src.block
                 intoDict[texturePrefixCode + key] = Textures[type + "-" + key];
             }
         }
-
-        // Token: 0x06000FD7 RID: 4055 RVA: 0x00099C64 File Offset: 0x00097E64
         public string[] GetDisableElements(ItemStack stack)
         {
             return null;
         }
-
-        // Token: 0x06000FD8 RID: 4056 RVA: 0x00099C67 File Offset: 0x00097E67
         public string[] GetKeepElements(ItemStack stack)
         {
             return null;
         }
-
-        // Token: 0x06000FD9 RID: 4057 RVA: 0x00099C6A File Offset: 0x00097E6A
         public string GetTexturePrefixCode(ItemStack stack)
         {
             return Code.ToShortString() + "-" + stack.Attributes.GetString("type", null) + "-";
