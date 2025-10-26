@@ -114,6 +114,8 @@ namespace canmailbox.src.block
             }
         }
 
+        public int RequiresBehindSlots { get; set; }
+
         // Token: 0x06000FDC RID: 4060 RVA: 0x00099CDC File Offset: 0x00097EDC
         public override void OnLoaded(ICoreAPI api)
         {

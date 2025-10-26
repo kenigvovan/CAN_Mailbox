@@ -457,7 +457,7 @@ namespace canmailbox.src.be
         }
         protected virtual void OnInvClosed(IPlayer player)
         {
-            if (this.LidOpenEntityId.Count == 0)
+            if (this.LidOpenEntityId.Count == 0 || (this.LidOpenEntityId.Count == 1 && this.LidOpenEntityId.First() == player.Entity.EntityId))
             {
                 this.CloseLid();
             }

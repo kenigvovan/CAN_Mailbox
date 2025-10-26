@@ -196,7 +196,7 @@
 	],
 	"animations": [
 		{
-			"name": "Animation 1",
+			"name": "doorOpen",
 			"code": "lidopen",
 			"quantityframes": 30,
 			"onActivityStopped": "Rewind",
@@ -205,20 +205,28 @@
 				{
 					"frame": 0,
 					"elements": {
-						"Cube7": { "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 }
+						"Cube7": {
+							"rotationX": 0.0,
+							"rotationY": 0.0,
+							"rotationZ": 0.0
+						}
 					}
 				},
 				{
 					"frame": 29,
 					"elements": {
-						"Cube7": { "rotationX": 45.0, "rotationY": 0.0, "rotationZ": 0.0 }
+						"Cube7": {
+							"rotationX": 45.0,
+							"rotationY": 0.0,
+							"rotationZ": 0.0
+						}
 					}
 				}
 			]
 		},
 
 		{
-			"name": "Animation 2",
+			"name": "youGotMail",
 			"code": "flagup",
 			"quantityframes": 30,
 			"onActivityStopped": "Rewind",
@@ -227,13 +235,21 @@
 				{
 					"frame": 0,
 					"elements": {
-						"Cube9": { "rotationX": 0.0, "rotationY": 0.0, "rotationZ": 0.0 }
+						"Cube9": {
+							"rotationX": 0.0,
+							"rotationY": 0.0,
+							"rotationZ": 0.0
+						}
 					}
 				},
 				{
 					"frame": 29,
 					"elements": {
-						"Cube9": { "rotationX": 90.0, "rotationY": 0.0, "rotationZ": 0.0 }
+						"Cube9": {
+							"rotationX": 90.0,
+							"rotationY": 0.0,
+							"rotationZ": 0.0
+						}
 					}
 				}
 			]
