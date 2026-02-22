@@ -7,25 +7,7 @@
 	"textureWidth": 16,
 	"textureHeight": 16,
 	"textureSizes": {
-		"oak1": [16,16],
-		"bismuth3": [16,16],
-		"tin4": [16,16],
-		"black": [16,16],
-		"inside": [16,16],
-		"brass4": [16,16],
-		"iron1": [16,16],
-		"inner side": [16,16],
-		"copper4": [16,16],
-		"red": [16,16],
-		"bismuth5": [16,16],
-		"bismuth4": [16,16],
-		"nickel1": [16,16],
-		"molybdochalkos1": [16,16],
-		"iron5": [16,16],
-		"surface": [16,16],
-		"oak-h": [16,16],
-		"iron": [16,16],
-		"nickel": [16,16]
+
 	},
 	"textures": {
 		"black": "game:block/wood/planks/pine1.png",

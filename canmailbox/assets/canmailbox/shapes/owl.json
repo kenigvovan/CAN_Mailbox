@@ -8,10 +8,10 @@
 	"textureSizes": {
 	},
 	"textures": {
-		"top": "block/wood/treasurechest/owl/top",
-		"sides2": "block/wood/treasurechest/owl/sides2",
-		"sides1": "block/wood/treasurechest/owl/sides1",
-		"inside": "block/wood/treasurechest/owl/inside"
+		"top": "game:block/wood/treasurechest/owl/top",
+		"sides2": "game:block/wood/treasurechest/owl/sides2",
+		"sides1": "game:block/wood/treasurechest/owl/sides1",
+		"inside": "game:block/wood/treasurechest/owl/inside"
 	},
 	"elements": [
 		{
