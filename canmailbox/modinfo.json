@@ -8,8 +8,8 @@
       "Ragolution"
     ],
     "description": "Mailbox.",
-    "version": "1.1.2",
+    "version": "1.1.6",
     "dependencies": {
-        "game": "1.22.0-pre.2"
+        "game": ""
     }
 }

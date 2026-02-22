@@ -10,6 +10,14 @@
 
 	},
 	"textures": {
+		"black": "game:block/wood/planks/pine1.png",
+		"red": "game:block/wood/planks/pine1.png",
+		"iron": "game:block/wood/planks/pine1.png",
+		"nickel": "game:block/wood/planks/pine1.png",
+		"iron5": "game:block/wood/planks/pine1.png",
+		"molybdochalkos1": "game:block/wood/planks/pine1.png",
+		"inside": "game:block/wood/planks/pine1.png",
+		"inner side": "game:block/wood/planks/pine1.png"
 	},
 	"elements": [
 		{

@@ -3,4 +3,8 @@
   "gui-mailbox-name": "Mail box",
   "block-owl-canmailbox-east": "Mail box",
   "block-wallmounted-canmailbox-east": "Mail box"
+    "gui-mailbox-name": "Mail box",
+    "block-owl-canmailbox-east": "Mail box",
+    "block-wallmounted-canmailbox-east": "Mail box",
+    "block-wallmounted-typed-canmailbox-east": "Mail box"
 }
