@@ -1,12 +1,13 @@
-﻿using System;
+﻿using canmailbox.src.block;
+using canmailbox.src.gui;
+using canmailbox.src.inventory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using canmailbox.src.block;
-using canmailbox.src.gui;
-using canmailbox.src.inventory;
+using System.Xml.Linq;
 using Vintagestory.API.Client;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
@@ -86,7 +87,7 @@ namespace canmailbox.src.be
         private ICoreClientAPI capi;
         public Dictionary<string, AssetLocation> tmpAssets = new Dictionary<string, AssetLocation>();
         public Size2i AtlasSize => this.capi.BlockTextureAtlas.Size;
-        public override void Dispose()
+        protected override void Dispose()
         {
             GuiDialogBlockEntity guiDialogBlockEntity = invDialog;
             if (guiDialogBlockEntity != null && guiDialogBlockEntity.IsOpened())
@@ -102,7 +103,7 @@ namespace canmailbox.src.be
             if (packetid == 5000)
             {
                 return;
-                if (invDialog != null)
+                /*if (invDialog != null)
                 {
                     GuiDialogBlockEntity guiDialogBlockEntity = invDialog;
                     if (guiDialogBlockEntity != null && guiDialogBlockEntity.IsOpened())
@@ -126,7 +127,7 @@ namespace canmailbox.src.be
                 AssetLocation assetLocation2 = ((text2 == null) ? null : AssetLocation.Create(text2, block.Code.Domain));
                 invDialog.OpenSound = assetLocation ?? OpenSound;
                 invDialog.CloseSound = assetLocation2 ?? CloseSound;
-                invDialog.TryOpen();
+                invDialog.TryOpen();*/
             }
 
             if (packetid == 5001)
@@ -528,11 +529,11 @@ namespace canmailbox.src.be
                 this.retrieveOnly = block.Attributes["retrieveOnly"][this.type].AsBool(false);
                 if (block.Attributes["typedOpenSound"][this.type].Exists)
                 {
-                    this.OpenSound = AssetLocation.Create(block.Attributes["typedOpenSound"][this.type].AsString(this.OpenSound.ToShortString()), block.Code.Domain);
+                    this.OpenSound = block.Attributes["typedOpenSound"][this.type].AsObject<SoundAttributes?>(null, base.Block.Code.Domain, true) ?? this.OpenSound;
                 }
                 if (block.Attributes["typedCloseSound"][this.type].Exists)
                 {
-                    this.CloseSound = AssetLocation.Create(block.Attributes["typedCloseSound"][this.type].AsString(this.CloseSound.ToShortString()), block.Code.Domain);
+                    this.CloseSound = block.Attributes["typedCloseSound"][this.type].AsObject<SoundAttributes?>(null, base.Block.Code.Domain, true) ?? this.CloseSound;
                 }
             }
             //this.inventory = new InventoryGeneric(this.quantitySlots, null, null, null);
@@ -739,12 +740,31 @@ namespace canmailbox.src.be
                     {
                         invDialog = new GuiDialogBlockEntityMailBoxInventory(this.DialogTitle, Inventory, Pos, 0, Api as ICoreClientAPI);
                         Block block = Api.World.BlockAccessor.GetBlock(Pos);
-                        string text = block.Attributes?["openSound"]?.AsString();
-                        string text2 = block.Attributes?["closeSound"]?.AsString();
-                        AssetLocation assetLocation = ((text == null) ? null : AssetLocation.Create(text, block.Code.Domain));
-                        AssetLocation assetLocation2 = ((text2 == null) ? null : AssetLocation.Create(text2, block.Code.Domain));
-                        invDialog.OpenSound = assetLocation ?? OpenSound;
-                        invDialog.CloseSound = assetLocation2 ?? CloseSound;
+                        JsonObject attributes = block.Attributes;
+                        SoundAttributes? soundAttributes;
+                        if (attributes == null)
+                        {
+                            soundAttributes = null;
+                        }
+                        else
+                        {
+                            JsonObject jsonObject = attributes["openSound"];
+                            soundAttributes = ((jsonObject != null) ? jsonObject.AsObject<SoundAttributes?>(null, base.Block.Code.Domain, true) : null);
+                        }
+                        invDialog.OpenSound = soundAttributes ?? this.OpenSound;
+                        GuiDialogBlockEntity guiDialogBlockEntity4 = this.invDialog;
+                        JsonObject attributes2 = block.Attributes;
+                        SoundAttributes? soundAttributes2;
+                        if (attributes2 == null)
+                        {
+                            soundAttributes2 = null;
+                        }
+                        else
+                        {
+                            JsonObject jsonObject2 = attributes2["closeSound"];
+                            soundAttributes2 = ((jsonObject2 != null) ? jsonObject2.AsObject<SoundAttributes?>(null, base.Block.Code.Domain, true) : null);
+                        }
+                        invDialog.CloseSound = soundAttributes2 ?? this.CloseSound;
                         invDialog.TryOpen();
                     }
                     /*invDialog.OnClosed += delegate

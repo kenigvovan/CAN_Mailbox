@@ -580,7 +580,7 @@ namespace canmailbox.src.block
                         world.SpawnItemEntity(drops[i], pos, null);
                     }
                 }
-                world.PlaySoundAt(Sounds.GetBreakSound(byPlayer), pos, -0.5, byPlayer, true, 32f, 1f);
+                world.PlaySoundAt(Sounds.GetBreakSound(byPlayer), pos.X, pos.Y, pos.Z, 0, byPlayer, 1f);
             }
             if (EntityClass != null)
             {

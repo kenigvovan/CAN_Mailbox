@@ -107,7 +107,7 @@ namespace canmailbox.src.inventory.slots
                         }
                     }
                 }
-                InventoryPlayerBackPacks playerBackpacks = (InventoryPlayerBackPacks)player.InventoryManager.GetOwnInventory("backpack");
+                InventoryPlayerBackpacks playerBackpacks = (InventoryPlayerBackpacks)player.InventoryManager.GetOwnInventory("backpack");
                 if(playerBackpacks.Count < 5)
                 {
                     return;
