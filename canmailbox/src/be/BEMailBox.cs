@@ -18,8 +18,74 @@ using Vintagestory.GameContent;
 
 namespace canmailbox.src.be
 {
-    public class BEMailBox: BlockEntityOpenableContainer, IRotatable
+    public class BEMailBox: BlockEntityOpenableContainer, IRotatable, ITexPositionSource
     {
+        internal InventoryCANMailBox inventory;
+        public string type = "owl";
+        public string woodType = "normal";
+        public string metalType = "iron";
+        public string defaultType;
+        public int quantitySlots = 16;
+        public int quantityColumns = 4;
+        public string inventoryClassName = "canmailbox";
+        public string dialogTitleLangCode = "chestcontents";
+        public bool retrieveOnly;
+        private float meshangle;
+        public MeshData ownMesh;
+        public Cuboidf[] collisionSelectionBoxes;
+        private Vec3f rendererRot = new Vec3f();
+        public string ownerUID;
+        public string ownerName;
+        public bool flagUp = false;
+        bool flagChecked = false;
+        public virtual float MeshAngle
+        {
+            get
+            {
+                return this.meshangle;
+            }
+            set
+            {
+                this.meshangle = value;
+                this.rendererRot.Y = value * 57.295776f;
+            }
+        }
+        public virtual string DialogTitle
+        {
+            get
+            {
+                return Lang.Get(this.dialogTitleLangCode, Array.Empty<object>());
+            }
+        }
+        public override InventoryCANMailBox Inventory
+        {
+            get
+            {
+                return this.inventory;
+            }
+        }
+        public override string InventoryClassName
+        {
+            get
+            {
+                return this.inventoryClassName;
+            }
+        }
+        private BlockEntityAnimationUtil animUtil
+        {
+            get
+            {
+                BEBehaviorAnimatable behavior = base.GetBehavior<BEBehaviorAnimatable>();
+                if (behavior == null)
+                {
+                    return null;
+                }
+                return behavior.animUtil;
+            }
+        }
+        private ICoreClientAPI capi;
+        public Dictionary<string, AssetLocation> tmpAssets = new Dictionary<string, AssetLocation>();
+        public Size2i AtlasSize => this.capi.BlockTextureAtlas.Size;
         public override void Dispose()
         {
             GuiDialogBlockEntity guiDialogBlockEntity = invDialog;
@@ -98,64 +164,84 @@ namespace canmailbox.src.be
             }
             
         }
-        public virtual float MeshAngle
+        public TextureAtlasPosition this[string textureCode]
         {
             get
             {
-                return this.meshangle;
-            }
-            set
-            {
-                this.meshangle = value;
-                this.rendererRot.Y = value * 57.295776f;
-            }
-        }
-        public virtual string DialogTitle
-        {
-            get
-            {
-                return Lang.Get(this.dialogTitleLangCode, Array.Empty<object>());
-            }
-        }
-        public override InventoryCANMailBox Inventory
-        {
-            get
-            {
-                return this.inventory;
-            }
-        }
-        public override string InventoryClassName
-        {
-            get
-            {
-                return this.inventoryClassName;
-            }
-        }
-        private BlockEntityAnimationUtil animUtil
-        {
-            get
-            {
-                BEBehaviorAnimatable behavior = base.GetBehavior<BEBehaviorAnimatable>();
-                if (behavior == null)
+                if (tmpAssets.TryGetValue(textureCode, out var assetCode))
                 {
-                    return null;
+                    return this.getOrCreateTexPos(assetCode);
                 }
-                return behavior.animUtil;
+
+                Dictionary<string, CompositeTexture> dictionary;
+                dictionary = new Dictionary<string, CompositeTexture>();
+                foreach (var it in this.Block.Textures)
+                {
+                    dictionary.Add(it.Key, it.Value);
+                }
+                AssetLocation texturePath = (AssetLocation)null;
+                CompositeTexture compositeTexture;
+                if (dictionary.TryGetValue(textureCode, out compositeTexture))
+                    texturePath = compositeTexture.Baked.BakedName;
+                if ((object)texturePath == null && dictionary.TryGetValue("all", out compositeTexture))
+                    texturePath = compositeTexture.Baked.BakedName;
+
+                return this.getOrCreateTexPos(texturePath);
             }
+        }
+        private TextureAtlasPosition getOrCreateTexPos(AssetLocation texturePath)
+        {
+            TextureAtlasPosition texPos = this.capi.BlockTextureAtlas[texturePath];
+            if (texPos == null)
+            {
+                IAsset asset = this.capi.Assets.TryGet(texturePath.Clone().WithPathPrefixOnce("textures/").WithPathAppendixOnce(".png"));
+                if (asset != null)
+                {
+                    BitmapRef bitmap = asset.ToBitmap(this.capi);
+                    this.capi.BlockTextureAtlas.GetOrInsertTexture(texturePath, out int _, out texPos, () => asset.ToBitmap(this.Api as ICoreClientAPI));
+                }
+                else
+                {
+                    this.capi.World.Logger.Warning("For render in block " + this.Block.Code?.ToString() + ", item {0} defined texture {1}, not no such texture found.", "", (object)texturePath);
+                }
+            }
+            return texPos;
         }
         public BEMailBox()
         {
-            var c = 3;
-            //this.RegisterGameTickListener
         }
         public override void CreateBehaviors(Block block, IWorldAccessor worldForResolve)
         {
             base.CreateBehaviors(block, worldForResolve);
             var f = 3;
         }
-        //public 
+        public string GetShapeString()
+        {
+            string shapeloc;
+            if (type == "wallmounted-typed")
+            {
+                shapeloc = "canmailbox:shapes/postbox.json";
+            }
+            else if (type == "wallmounted")
+            {
+                shapeloc = "canmailbox:shapes/postbox.json";
+            }
+            else
+            {
+                shapeloc = "canmailbox:shapes/mudbox.json";
+            }
+            return shapeloc;
+        }
         public override void Initialize(ICoreAPI api)
         {
+            if (api.Side == EnumAppSide.Server)
+            {
+                //this.MeshAngle = (BlockFacing.FromCode(base.Block.LastCodePart(0)).HorizontalAngleIndex - 1) * 90;
+            }
+            else
+            {
+                this.capi = api as ICoreClientAPI;
+            }
             JsonObject attributes = base.Block.Attributes;
             string text;
             if (attributes == null)
@@ -197,6 +283,35 @@ namespace canmailbox.src.be
                         });
                     }
                     this.flagChecked = true;
+                    if (this.ownMesh == null && woodType is not null)
+                    {
+                        //this.ownMesh = this.GenMesh(this.capi.Tesselator);
+                        string key = GetMeshKey();
+                        this.FillTextureDict();
+                        
+                        this.ownMesh = animUtil.InitializeAnimator(string.Concat(new string[]
+                        {
+                            key,
+                            "-",
+                            flagUp.ToString()
+                        }), Vintagestory.API.Common.Shape.TryGet(this.Api, GetShapeString()), this, this.rendererRot);
+                    }
+                }
+                else
+                {
+                    if (this.ownMesh == null && woodType is not null)
+                    {
+                        FillTextureDict();
+                        this.ownMesh = this.GenMesh(this.capi.Tesselator);
+                        string key = GetMeshKey();
+                        this.ownMesh = animUtil.InitializeAnimator(string.Concat(new string[]
+                        {
+                            key,
+                            "-",
+                            flagUp.ToString()
+                        }), Vintagestory.API.Common.Shape.TryGet(this.Api, GetShapeString()), this, this.rendererRot);
+                        
+                    }
                 }
             }
         }
@@ -211,8 +326,43 @@ namespace canmailbox.src.be
                     this.InitInventory(base.Block);
                     this.LateInitInventory();
                 }
+                string nowWoodType = byItemStack.Attributes.GetString("wood", "normal");
+                string nowMetalType = byItemStack.Attributes.GetString("metal", "iron");
+                this.metalType = nowMetalType;
+                if (nowWoodType != this.woodType)
+                {
+                    this.woodType = nowWoodType;
+                }
+                if (this.Api.Side == EnumAppSide.Client && woodType is not null)
+                {
+                    FillTextureDict();
+      
+                    string skey = string.Concat(new string[]
+                    {
+                        base.Block.FirstCodePart(0),
+                        this.woodType,
+                        this.type
+                    });
+                    string key = GetMeshKey();
+                    this.ownMesh = animUtil.InitializeAnimator("wiring2" + string.Concat(new string[]
+                    {
+                            key,
+                            "-",
+                            flagUp.ToString()
+                    }), Vintagestory.API.Common.Shape.TryGet(this.Api, GetShapeString()), this, this.rendererRot);
+                }
             }
             base.OnBlockPlaced(null);
+        }
+        public void OnFirstPlaced()
+        {
+            string key = GetMeshKey();
+            this.ownMesh = animUtil.InitializeAnimator(string.Concat(new string[]
+                    {
+                            key,
+                            "-",
+                            flagUp.ToString()
+                    }), Vintagestory.API.Common.Shape.TryGet(this.Api, GetShapeString()), this, this.rendererRot);
         }
         public override void FromTreeAttributes(ITreeAttribute tree, IWorldAccessor worldForResolving)
         {
@@ -221,6 +371,7 @@ namespace canmailbox.src.be
             this.MeshAngle = tree.GetFloat("meshAngle", this.MeshAngle);
             this.ownerUID = tree.GetString("ownerUID");
             this.ownerName = tree.GetString("ownerName");
+            bool typeChanged = false;
             if (this.inventory == null)
             {
                 if (tree.HasAttribute("forBlockId"))
@@ -260,9 +411,13 @@ namespace canmailbox.src.be
                     this.Api = worldForResolving.Api;
                 }
                 this.LateInitInventory();
+                typeChanged = true;
             }
+            string oldWoodType = this.woodType;
+            this.woodType = tree.GetString("woodType");
+            this.metalType = tree.GetString("metalType");
             if (worldForResolving.Api.Side == EnumAppSide.Client)
-            {
+            {          
                 if (tree.GetBool("flagUp") != this.flagUp)
                 {
                     this.flagUp = tree.GetBool("flagUp");
@@ -297,6 +452,27 @@ namespace canmailbox.src.be
                     this.ownMesh = this.GenMesh((worldForResolving.Api as ICoreClientAPI).Tesselator, true);
                     this.MarkDirty(true);*/
                 }
+                else if(typeChanged)
+                {
+                    string key = GetMeshKey();
+                    this.FillTextureDict();
+
+                    this.ownMesh = animUtil.InitializeAnimator(string.Concat(new string[]
+                    {
+                            key,
+                            "-",
+                            flagUp.ToString()
+                    }), Vintagestory.API.Common.Shape.TryGet(this.Api, GetShapeString()), this, this.rendererRot);
+                    this.animUtil.StartAnimation(new AnimationMetaData
+                    {
+                        Animation = "flagup",
+                        Code = "flagup",
+                        AnimationSpeed = 1.8f,
+                        EaseOutSpeed = 6f,
+                        EaseInSpeed = 15f
+                    });
+                    this.animUtil.StopAnimation("flagup");
+                }
             }
             else
             {
@@ -326,6 +502,8 @@ namespace canmailbox.src.be
             tree.SetString("ownerUID", ownerUID);
             tree.SetString("ownerName", ownerName);
             tree.SetBool("flagUp", this.flagUp);
+            tree.SetString("woodType", this.woodType);
+            tree.SetString("metalType", this.metalType);
         }
         protected virtual void InitInventory(Block block)
         {
@@ -586,7 +764,46 @@ namespace canmailbox.src.be
             }
             return true;
         }
-
+        public void FillTextureDict()
+        {
+            if (this.type == "owl")
+            {
+                this.tmpAssets["top"] = new AssetLocation("game:block/wood/chest/owl/top.png");
+                this.tmpAssets["sides2"] = new AssetLocation("game:block/wood/chest/owl/sides2.png");
+                this.tmpAssets["sides1"] = new AssetLocation("game:block/wood/chest/owl/sides1.png");
+                this.tmpAssets["inside"] = new AssetLocation("game:block/wood/chest/owl/inside.png");
+                this.tmpAssets["inside"] = new AssetLocation("game:block/wood/chest/owl/inside.png");
+                this.tmpAssets["copper"] = new AssetLocation("game:block/metal/plate/copper.png");
+                this.tmpAssets["aged"] = new AssetLocation("game:block/wood/debarked/aged.png");
+                this.tmpAssets["iron"] = new AssetLocation("game:block/metal/plate/iron.png");
+                return;
+                //"game:block/wood/debarked/aged"
+            }
+            if (this.type == "wallmounted-typed" && this.woodType != "normal" && this.woodType != "")
+            {
+                this.tmpAssets["wallmounted"] = new AssetLocation("game:block/metal/plate/iron.png");
+                this.tmpAssets["black"] = new AssetLocation("game:block/black.png");
+                this.tmpAssets["red"] = new AssetLocation("game:block/clay/hardened/red.png");
+                this.tmpAssets["iron"] = new AssetLocation("game:block/metal/sheet/" + this.metalType + "1.png");
+                this.tmpAssets["nickel"] = new AssetLocation("game:block/metal/plate/nickel.png");
+                this.tmpAssets["iron5"] = new AssetLocation("game:block/metal/sheet/iron5.png");
+                this.tmpAssets["molybdochalkos1"] = new AssetLocation("game:block/metal/sheet/" + this.metalType + "1.png");
+                this.tmpAssets["inside"] = new AssetLocation("game:block/wood/planks/" + this.woodType + "1.png");
+                this.tmpAssets["inner side"] = new AssetLocation("game:block/wood/planks/" + this.woodType + "1.png");
+            }
+            else if(this.type == "wallmounted" || this.type == "wallmounted-typed" || this.woodType == "normal")
+            {
+                this.tmpAssets["wallmounted"] = new AssetLocation("game:block/metal/plate/iron.png");
+                this.tmpAssets["black"] = new AssetLocation("game:block/black.png");
+                this.tmpAssets["red"] = new AssetLocation("game:block/clay/hardened/red.png");
+                this.tmpAssets["iron"] = new AssetLocation("game:block/metal/plate/iron.png");
+                this.tmpAssets["nickel"] = new AssetLocation("game:block/metal/plate/nickel.png");
+                this.tmpAssets["iron5"] = new AssetLocation("game:block/metal/sheet/iron5.png");
+                this.tmpAssets["molybdochalkos1"] = new AssetLocation("game:block/metal/sheet/molybdochalkos1.png");
+                this.tmpAssets["inside"] = new AssetLocation("game:block/wood/barrel/inside.png");
+                this.tmpAssets["inner side"] = new AssetLocation("game:block/wood/bucket/inner side.png");
+            }
+        }
         public MeshData GenMesh(ITesselatorAPI tesselator, bool updateAnim = false)
         {
             CANBlockGenericTypedContainer block = base.Block as CANBlockGenericTypedContainer;
@@ -619,18 +836,11 @@ namespace canmailbox.src.be
             }
             int? num2 = num;
             int rndTexNum = num2.GetValueOrDefault();
-            string key = "typedContainerMeshes" + base.Block.Code.ToShortString();
+            string key = GetMeshKey();
             Dictionary<string, MeshData> meshes = ObjectCacheUtil.GetOrCreate<Dictionary<string, MeshData>>(this.Api, key, () => new Dictionary<string, MeshData>());
             JsonObject attributes2 = base.Block.Attributes;
             string shapename = (attributes2 != null) ? attributes2["shape"][this.type].AsString(null) : null;
-            /*if(flagUp)
-            {
-                shapename += "_up";
-            }
-            else
-            {
-                shapename += "_down";
-            }*/
+            FillTextureDict();
             if (shapename == null)
             {
                 return null;
@@ -643,6 +853,7 @@ namespace canmailbox.src.be
                 string skey = string.Concat(new string[]
                 {
                     base.Block.FirstCodePart(0),
+                    this.woodType,
                     this.type,
                     block.Subtype,
                     "--",
@@ -659,16 +870,13 @@ namespace canmailbox.src.be
             {
                 if ((this.animUtil != null && this.animUtil.renderer == null) || updateAnim)
                 {
-                    this.animUtil.InitializeAnimator(string.Concat(new string[]
+                    FillTextureDict();
+                    mesh = this.animUtil.InitializeAnimator(string.Concat(new string[]
                     {
-                        this.type,
-                        "-",
                         key,
                         "-",
-                        block.Subtype,
-                        "-",
                         flagUp.ToString()
-                    }), mesh, shape, this.rendererRot, EnumRenderStage.Opaque);
+                    }),Vintagestory.API.Common.Shape.TryGet(this.Api, GetShapeString()), this, this.rendererRot);
                 }
                 return mesh;
             }
@@ -685,31 +893,26 @@ namespace canmailbox.src.be
                 }*/
                 if (this.animUtil.renderer == null || updateAnim)
                 {
-                    GenericContainerTextureSource texSource = new GenericContainerTextureSource
-                    {
-                        blockTextureSource = tesselator.GetTextureSource(base.Block, rndTexNum, false),
-                        curType = this.type
-                    };
+                    FillTextureDict();
                     mesh = this.animUtil.InitializeAnimator(string.Concat(new string[]
                     {
-                        this.type,
-                        "-",
                         key,
                         "-",
-                        block.Subtype,
-                        "-",
                         flagUp.ToString()
-                    }), shape, texSource, this.rendererRot);
+                    }), Vintagestory.API.Common.Shape.TryGet(this.Api, GetShapeString()), this, this.rendererRot);
                 }
+                this.ownMesh = mesh;
                 return meshes[meshKey] = mesh;
             }
             mesh = block.GenMesh(this.Api as ICoreClientAPI, this.type, shapename, tesselator, new Vec3f(), rndTexNum);
+            this.ownMesh = mesh;
             return meshes[meshKey] = mesh;
         }
         public override bool OnTesselation(ITerrainMeshPool mesher, ITesselatorAPI tesselator)
         {
             if (!base.OnTesselation(mesher, tesselator))
             {
+                //ownMesh = null;
                 if (this.ownMesh == null)
                 {
                     this.ownMesh = this.GenMesh(tesselator);
@@ -779,21 +982,9 @@ namespace canmailbox.src.be
                 ((ICoreServerAPI)Api).Network.BroadcastBlockEntityPacket(Pos, 5001, data, (IServerPlayer)player);
             }
         }
-        internal InventoryCANMailBox inventory;
-        public string type = "owl";
-        public string defaultType;
-        public int quantitySlots = 16;
-        public int quantityColumns = 4;
-        public string inventoryClassName = "canmailbox";
-        public string dialogTitleLangCode = "chestcontents";
-        public bool retrieveOnly;
-        private float meshangle;
-        public MeshData ownMesh;
-        public Cuboidf[] collisionSelectionBoxes;
-        private Vec3f rendererRot = new Vec3f();
-        public string ownerUID;
-        public string ownerName;
-        public bool flagUp = false;
-        bool flagChecked = false;
+        public string GetMeshKey()
+        {
+            return "typedContainerMeshes" + this.rendererRot + this.type + this.woodType + this.metalType;
+        }
     }
 }

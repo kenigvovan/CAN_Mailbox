@@ -28,14 +28,14 @@
 		"nickel": [16,16]
 	},
 	"textures": {
-		"black": "C:/Users/koeni/Desktop/tex/black",
-		"red": "C:/Users/koeni/Desktop/tex/hardened/red",
-		"iron": "C:/Users/koeni/Desktop/tex/iron",
-		"nickel": "C:/Users/koeni/Desktop/tex/nickel",
-		"iron5": "C:/Users/koeni/Desktop/tex/iron5",
-		"molybdochalkos1": "C:/Users/koeni/Desktop/tex/molybdochalkos1",
-		"inside": "C:/Users/koeni/Desktop/tex/inside",
-		"inner side": "C:/Users/koeni/Desktop/tex/inner side"
+		"black": "game:block/wood/planks/pine1.png",
+		"red": "game:block/wood/planks/pine1.png",
+		"iron": "game:block/wood/planks/pine1.png",
+		"nickel": "game:block/wood/planks/pine1.png",
+		"iron5": "game:block/wood/planks/pine1.png",
+		"molybdochalkos1": "game:block/wood/planks/pine1.png",
+		"inside": "game:block/wood/planks/pine1.png",
+		"inner side": "game:block/wood/planks/pine1.png"
 	},
 	"elements": [
 		{

@@ -8,7 +8,7 @@
 		"partialAttachable": true,
 		"inventoryClassName": "canmailbox",
 		"defaultType": "owl",
-		"types": [ "owl", "wallmounted" ],
+		"types": [ "owl", "wallmounted", "wallmounted-typed" ],
 		"collisionSelectionBoxes": {
 			"owl": [
 				{
@@ -67,6 +67,7 @@
 			"golden": true,
 			"owl": true,
 			"wallmounted": true,
+			"wallmounted-typed": true,
 			"normal-aged": true,
 			"golden-aged": true,
 			"owl-aged": true,
@@ -76,23 +77,24 @@
 		},
 		"quantitySlots": {
 			"owl": 16,
-			"wallmounted":  16
+			"wallmounted": 16
 		},
 		"dialogTitleLangCode": {
 			"owl": "chestcontents",
-			"wallmounted":  "chestcontents"
+			"wallmounted": "chestcontents"
 		},
 		"storageType": {
 			"owl": 72,
-			"wallmounted":  72
+			"wallmounted": 72
 		},
 		"retrieveOnly": {
 			"owl": false,
-			"wallmounted":  false
+			"wallmounted": false
 		},
 		"shape": {
 			"owl": "canmailbox:mudbox",
-			"wallmounted": "canmailbox:postbox"
+			"wallmounted": "canmailbox:postbox",
+			"wallmounted-typed": "canmailbox:postbox"
 		},
 		"typedOpenSound": {
 			"normal-generic": "sounds/block/largechestopen",
@@ -137,6 +139,30 @@
 						"type": "block",
 						"code": "canmailbox-east",
 						"attributes": { "type": "wallmounted" }
+					},
+					{
+						"type": "block",
+						"code": "canmailbox-east",
+						"attributes": {
+							"type": "wallmounted-typed",
+							"wood": "oak"
+						}
+					},
+					{
+						"type": "block",
+						"code": "canmailbox-east",
+						"attributes": {
+							"type": "wallmounted-typed",
+							"wood": "acacia"
+						}
+					},
+					{
+						"type": "block",
+						"code": "canmailbox-east",
+						"attributes": {
+							"type": "wallmounted-typed",
+							"wood": "pine"
+						}
 					}
 				]
 			}
@@ -191,47 +217,76 @@
 		"wallmounted-nickel": {
 			"base": "game:block/metal/plate/nickel"
 		},
-			"wallmounted-iron5": {
-				"base": "game:block/metal/sheet/iron5"
-			},
-				"wallmounted-molybdochalkos1": {
-					"base": "game:block/metal/sheet/molybdochalkos1"
-				},
-					"wallmounted-inside": {
-						"base": "game:block/wood/barrel/inside"
-					},
-						"wallmounted-inner side": {
-							"base": "game:block/wood/bucket/inner side"
-						},
+		"wallmounted-iron5": {
+			"base": "game:block/metal/sheet/iron5"
+		},
+		"wallmounted-molybdochalkos1": {
+			"base": "game:block/metal/sheet/molybdochalkos1"
+		},
+		"wallmounted-inside": {
+			"base": "game:block/wood/barrel/inside"
+		},
+		"wallmounted-inner side": {
+			"base": "game:block/wood/bucket/inner side"
+		},
 
-							"normal-generic-sides2": { "base": "block/wood/trunk/sides" },
-							"normal-generic-lid": { "base": "block/wood/trunk/lid" },
-							"normal-generic-accessories": { "base": "block/wood/trunk/accessories" },
+		"normal-generic-sides2": { "base": "block/wood/trunk/sides" },
+		"normal-generic-lid": { "base": "block/wood/trunk/lid" },
+		"normal-generic-accessories": { "base": "block/wood/trunk/accessories" },
 
-							"normal-aged-sides2": { "base": "block/wood/trunk/aged-sides" },
-							"normal-aged-lid": { "base": "block/wood/trunk/aged-lid" },
-							"normal-aged-accessories": { "base": "block/wood/trunk/aged-accessories" },
+		"normal-aged-sides2": { "base": "block/wood/trunk/aged-sides" },
+		"normal-aged-lid": { "base": "block/wood/trunk/aged-lid" },
+		"normal-aged-accessories": { "base": "block/wood/trunk/aged-accessories" },
 
-							"golden-top": { "base": "block/wood/chest/golden/top" },
-							"golden-sides2": { "base": "block/wood/chest/golden/sides2" },
-							"golden-sides1": { "base": "block/wood/chest/golden/sides1" },
-							"golden-inside": { "base": "block/wood/chest/golden/inside" },
+		"golden-top": { "base": "block/wood/chest/golden/top" },
+		"golden-sides2": { "base": "block/wood/chest/golden/sides2" },
+		"golden-sides1": { "base": "block/wood/chest/golden/sides1" },
+		"golden-inside": { "base": "block/wood/chest/golden/inside" },
 
-							"owl-top": { "base": "game:block/wood/chest/owl/top" },
-							"owl-sides2": { "base": "game:block/wood/chest/owl/sides2" },
-							"owl-sides1": { "base": "game:block/wood/chest/owl/sides1" },
-							"owl-inside": { "base": "game:block/wood/chest/owl/inside" },
+		"owl-top": { "base": "game:block/wood/chest/owl/top" },
+		"owl-sides2": { "base": "game:block/wood/chest/owl/sides2" },
+		"owl-sides1": { "base": "game:block/wood/chest/owl/sides1" },
+		"owl-inside": { "base": "game:block/wood/chest/owl/inside" },
 
-							"golden-aged-top": { "base": "block/wood/chest/golden-aged/top" },
-							"golden-aged-sides2": { "base": "block/wood/chest/golden-aged/sides2" },
-							"golden-aged-sides1": { "base": "block/wood/chest/golden-aged/sides1" },
-							"golden-aged-inside": { "base": "block/wood/chest/golden-aged/inside" },
+		"golden-aged-top": { "base": "block/wood/chest/golden-aged/top" },
+		"golden-aged-sides2": { "base": "block/wood/chest/golden-aged/sides2" },
+		"golden-aged-sides1": { "base": "block/wood/chest/golden-aged/sides1" },
+		"golden-aged-inside": { "base": "block/wood/chest/golden-aged/inside" },
 
-							"owl-aged-top": { "base": "block/wood/chest/owl-aged/top" },
-							"owl-aged-sides2": { "base": "block/wood/chest/owl-aged/sides2" },
-							"owl-aged-sides1": { "base": "block/wood/chest/owl-aged/sides1" },
-							"owl-aged-inside": { "base": "block/wood/chest/owl-aged/inside" }
-						},
+		"owl-aged-top": { "base": "block/wood/chest/owl-aged/top" },
+		"owl-aged-sides2": { "base": "block/wood/chest/owl-aged/sides2" },
+		"owl-aged-sides1": { "base": "block/wood/chest/owl-aged/sides1" },
+		"owl-aged-inside": { "base": "block/wood/chest/owl-aged/inside" },
+
+
+		"wallmounted-typed": {
+			"base": "game:block/metal/plate/iron"
+		},
+		"wallmounted-typed-black": {
+			"base": "game:block/black"
+		},
+		"wallmounted-typed-red": {
+			"base": "game:block/clay/hardened/red"
+		},
+		"wallmounted-typed-iron": {
+			"base": "game:block/metal/plate/iron"
+		},
+		"wallmounted-typed-nickel": {
+			"base": "game:block/metal/plate/nickel"
+		},
+		"wallmounted-typed-iron5": {
+			"base": "game:block/metal/sheet/iron5"
+		},
+		"wallmounted-typed-molybdochalkos1": {
+			"base": "game:block/metal/sheet/molybdochalkos1"
+		},
+		"wallmounted-typed-inside": {
+			"base": "game:block/wood/barrel/inside"
+		},
+		"wallmounted-typed-inner side": {
+			"base": "game:block/wood/bucket/inner side"
+		}
+	},
 	"blockmaterial": "Wood",
 	"replaceable": 900,
 	"resistance": 3,
@@ -284,9 +339,14 @@
 		"scale": 0.56
 	},
 	"guiTransform": {
+		"rotation": {
+			"x": -22.6,
+			"y": -147,
+			"z": 0
+		},
 		"origin": {
-			"x": 0.5,
-			"y": 0.4,
+			"x": 0.41,
+			"y": 0.5,
 			"z": 0.5
 		},
 		"scale": 1.16
