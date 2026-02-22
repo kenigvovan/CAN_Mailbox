@@ -50,10 +50,4 @@
   </Content>
 </ItemGroup>
 
-<ItemGroup>
-  <PackageReference Include="NuGet.Common" Version="7.3.0" />
-  <PackageReference Include="NuGet.Packaging" Version="7.3.0" />
-  <PackageReference Include="NuGet.Protocol" Version="7.3.0" />
-</ItemGroup>
-
 </Project>
