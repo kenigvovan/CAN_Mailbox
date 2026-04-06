@@ -1,15 +1,16 @@
 {
-    "type": "code",
-    "modid": "canmailbox",
-    "name": "canmailbox",
-    "authors": [
-      "KenigVovan",
-      "Morgen",
-      "Ragolution"
-    ],
-    "description": "Mailbox.",
-    "version": "1.1.7",
-    "dependencies": {
-        "game": ""
-    }
+  "type": "code",
+  "modid": "canmailbox",
+  "name": "canmailbox",
+  "authors": [
+    "KenigVovan",
+    "Morgen",
+    "Ragolution"
+  ],
+  "contributors": [ "captanredbeard", "C4BR3R4"],
+  "description": "Mailbox.",
+  "version": "1.1.8",
+  "dependencies": {
+    "game": ""
+  }
 }
